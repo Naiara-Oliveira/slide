@@ -1,34 +1,51 @@
-export default class Slide{
+export default class Slide {
 
-   constructor(slide , wrapper){
+   constructor(slide, wrapper) {
       this.slide = document.querySelector(slide);
-      this.wrapper= document.querySelector(wrapper);
-   
+      this.wrapper = document.querySelector(wrapper);
+      this.dist = {
+         finalPosicao: 0,
+         startX: 0,
+         movement: 0
+      }
    }
-   onStart(event){
+   onStart(event) {
       event.preventDefault();
-      this.wrapper.addEventListener('mousemove' , this.onMove);
+      this.dist.startX = event.clientX;
+      this.wrapper.addEventListener('mousemove', this.onMove);
+   }
+   updatePosicao(clientX) {
+      this.dist.movement = (this.dist.startX = clientX) * 1.5;
+      return this.dist.finalPosicao - this.dist.movement;
+
+   }
+   onMove(event) {
+      const finalPosicao = this.updatePosicao(event.clientX);
+      this.moveSlide(finalPosicao);
    }
 
-   onMove(event){
-      event.preventDefault();
-   }
-   onEnd(event){
-     this.wrapper.removeEventListener('mousemove', this.onMove);
-   }
-   addSlideEvents(){
-      this.wrapper.addEventListener('mousedown' , this.onStart);
-      this.wrapper.addEventListener('mouseup' , this.onEnd);
-   }
-bindEvents(){
-   this.onStart = this.onStart.bind(this);
-   this.onMove = this.onMove.bind(this);
-   this.onEnd = this.onEnd.bind(this);
-}
+   moveSlide(distX) {
+    this.dist.movePosition = distX;
+      this.slide.style.transform = `translated3d(${distX}px, 0, 0) `;
 
-init(){
-   this.bindEvents();
-   this.addSlideEvents();
-   return this;
-}
+   }
+   onEnd(event) {
+      this.wrapper.removeEventListener('mousemove', this.onMove);
+      this.dist.finalPosicao = this.dist.movePosition;
+   }
+   addSlideEvents() {
+      this.wrapper.addEventListener('mousedown', this.onStart);
+      this.wrapper.addEventListener('mouseup', this.onEnd);
+   }
+   bindEvents() {
+      this.onStart = this.onStart.bind(this);
+      this.onMove = this.onMove.bind(this);
+      this.onEnd = this.onEnd.bind(this);
+   }
+
+   init() {
+      this.bindEvents();
+      this.addSlideEvents();
+      return this;
+   }
 }
