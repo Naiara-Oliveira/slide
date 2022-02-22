@@ -5,4 +5,4 @@ slide.init();
 
 
 slide.changeSlide(2);
-console.log(slide);
+slide.activePrevSlide();
