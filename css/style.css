@@ -13,7 +13,6 @@ img{
 }
 .slide{
    display: flex;
-   
 }
 .slide-wrapper{
    overflow: hidden;
